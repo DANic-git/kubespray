@@ -51,7 +51,7 @@ image_arch: "{{host_architecture | default('amd64')}}"
 # Versions
 kubeadm_version: "{{ kube_version }}"
 etcd_version: v3.5.0
-crun_version: 1.2
+crun_version: 1.3
 runc_version: v1.0.2
 kata_containers_version: 2.2.0
 gvisor_version: 20210921
@@ -91,7 +91,7 @@ ovn4nfv_ovn_image_version: "v1.0.0"
 ovn4nfv_k8s_plugin_image_version: "v1.1.0"
 helm_version: "v3.7.0"
 nerdctl_version: "0.12.1"
-krew_version: "v0.4.1"
+krew_version: "v0.4.2"
 
 # Get kubernetes major version (i.e. 1.17.4 => 1.17)
 kube_major_version: "{{ kube_version | regex_replace('^v([0-9])+\\.([0-9]+)\\.[0-9]+', 'v\\1.\\2') }}"
@@ -118,7 +118,7 @@ kata_containers_download_url: "https://github.com/kata-containers/kata-container
 gvisor_runsc_download_url: "https://storage.googleapis.com/gvisor/releases/release/{{ gvisor_version }}/{{ ansible_architecture }}/runsc"
 gvisor_containerd_shim_runsc_download_url: "https://storage.googleapis.com/gvisor/releases/release/{{ gvisor_version }}/{{ ansible_architecture }}/containerd-shim-runsc-v1"
 nerdctl_download_url: "https://github.com/containerd/nerdctl/releases/download/v{{ nerdctl_version }}/nerdctl-{{ nerdctl_version }}-{{ ansible_system | lower }}-{{ image_arch }}.tar.gz"
-krew_download_url: "https://github.com/kubernetes-sigs/krew/releases/download/{{ krew_version }}/krew.tar.gz"
+krew_download_url: "https://github.com/kubernetes-sigs/krew/releases/download/{{ krew_version }}/krew-{{ host_os }}_{{ image_arch }}.tar.gz"
 containerd_download_url: "https://github.com/containerd/containerd/releases/download/v{{ containerd_version }}/containerd-{{ containerd_version }}-linux-{{ image_arch }}.tar.gz"
 
 crictl_checksums:
@@ -390,12 +390,33 @@ calicoctl_binary_checksums:
     v3.19.3: ec3cfbd2dccbd614ac353be8c9abf8e336d8700fbd2b9b76da1c3c4c14a6dfe2
     v3.18.5: 2080b2cd8efb71df98dce8678edaba8fce9252801c4b8f987609a4f4d6ddb4e2
 calico_crds_archive_checksums:
-  v3.20.2: aaeaebf3d11d88a09d8564c0655932fd2a80c158b71325c80a324199a847ed8a
+  v3.20.2: b75b9965197073d2ae510275f61779ad38ff961ffe95a2fc3e0f452f94949c40
   v3.19.3: 7066d0e6b0136920f82a75a5bd2d595e9f69bd3ab823403e920906569ec6be07
   v3.18.5: ed7065c5a90b71cf7b3b525d5107a4573bd051c3ff004a56ab6017c222b3e2d6
 
 krew_archive_checksums:
-  v0.4.1: a26deea175f70264260d59a4e061778a892f8a8e301ac261660dd7d24c551c99
+  linux:
+    arm:
+      v0.4.2: 115f503e35ef7f63f00a9b01236d80a9f94862ec684010a81c3a3b51bdca1351
+    arm64:
+      v0.4.2: 7581be80d803536acc63cceb20065023b96f07fd7eb9f4ee495dce0294a866eb
+    amd64:
+      v0.4.2: 203bfd8006b304c1e58d9e96f9afdc5f4a055e0fbd7ee397fac9f36bf202e721
+  darwin:
+    arm:
+      v0.4.2: 0
+    arm64:
+      v0.4.2: a69d48f8cad7d87b379071129cde3ee4abcaaa1c3f3692bc80887178b2cc7d33
+    amd64:
+      v0.4.2: 47c6b5b647c5de679a2302444f75a36a70530fa4751cb655e0edd5da56a5f110
+  windows:
+    arm:
+      v0.4.2: 0
+    arm64:
+      v0.4.2: 0
+    amd64:
+      v0.4.2: 3150ff0291ac876ebe4fe0e813ee90a18aa2bc0510c3adcfae6117dec44ef269
+
 
 helm_archive_checksums:
   arm:
@@ -425,6 +446,7 @@ crun_checksums:
     0.20.1: 9fac3040c95adbeced9110ceb79fd49556dd5027e39f98473c3c3e1f7edf5d16
     0.21: b96cbdf549b69d20ce5dc81c300a138e5c1fd3d11555674043143ace8303c9a7
     1.2: 2228a8e0e0f10920b230f9b8bc7c4fd951b603b278ccf0ebdba794339a49c33b
+    1.3: 020a2e74d48f1e52f888a31b8bf873a1a99e9f89713ac9ff9403e14b2b9d5c18
   arm64:
     0.16: 0
     0.17: 0
@@ -435,6 +457,7 @@ crun_checksums:
     0.20.1: bcbb1ad85cbd953c9c2eb8d8651fee2bbc949516c4c6ac4fd03a9dffc7d2ff53
     0.21: 7207d328978ee478be6dcf673ada0674305a624f57ee7ae1660c688751feb725
     1.2: 3aee1057196b40b9786a08c875569c9046e58f97d29333b454359668b6088fb1
+    1.3: c0955cf6d3d832c0249bbaa71ed235abb35b8ca45fe07f2bd4501a00afb9bdc4
 
 kata_containers_binary_checksums:
   arm:
@@ -474,20 +497,22 @@ nerdctl_archive_checksums:
   amd64:
     0.12.1: 868dc5997c3edb0bd06f75012e71c2b15ee0885b83bad191fbe2a1d6d5f4f2ac
 
-# TODO(cristicalin): remove compatibility entries once debian9 and ubuntu16 jobs are dropped or docker is dropped
 containerd_archive_checksums:
   arm:
-    latest: 0  # this is needed to make debian9 and ubuntu16 CI jobs happy
     1.4.9: 0
+    1.4.11: 0
     1.5.5: 0
+    1.5.7: 0
   arm64:
-    latest: 0  # this is needed to make debian9 and ubuntu16 CI jobs happy
     1.4.9: 0
+    1.4.11: 0
     1.5.5: 0
+    1.5.7: 0
   amd64:
-    latest: 0  # this is needed to make debian9 and ubuntu16 CI jobs happy
     1.4.9: 346f88ad5b973960ff81b5539d4177af5941ec2e4703b479ca9a6081ff1d023b
+    1.4.11: 80c47ec5ce2cd91a15204b5f5b534892ca653e75f3fba0c451ca326bca45fb00
     1.5.5: 8efc527ffb772a82021800f0151374a3113ed2439922497ff08f2596a70f10f1
+    1.5.7: 109fc95b86382065ea668005c376360ddcd8c4ec413e7abe220ae9f461e0e173
 
 etcd_binary_checksum: "{{ etcd_binary_checksums[image_arch] }}"
 cni_binary_checksum: "{{ cni_binary_checksums[image_arch] }}"
@@ -504,7 +529,7 @@ kata_containers_binary_checksum: "{{ kata_containers_binary_checksums[image_arch
 gvisor_runsc_binary_checksum: "{{ gvisor_runsc_binary_checksums[image_arch][gvisor_version] }}"
 gvisor_containerd_shim_binary_checksum: "{{ gvisor_containerd_shim_binary_checksums[image_arch][gvisor_version] }}"
 nerdctl_archive_checksum: "{{ nerdctl_archive_checksums[image_arch][nerdctl_version] }}"
-krew_archive_checksum: "{{ krew_archive_checksums[krew_version] }}"
+krew_archive_checksum: "{{ krew_archive_checksums[host_os][image_arch][krew_version] }}"
 containerd_archive_checksum: "{{ containerd_archive_checksums[image_arch][containerd_version] }}"
 
 # Containers
@@ -1104,7 +1129,7 @@ downloads:
     enabled: "{{ krew_enabled }}"
     file: true
     version: "{{ krew_version }}"
-    dest: "{{ local_release_dir }}/krew.tar.gz"
+    dest: "{{ local_release_dir }}/krew-{{ host_os }}_{{ image_arch }}.tar.gz"
     sha256: "{{ krew_archive_checksum }}"
     url: "{{ krew_download_url }}"
     unarchive: true
