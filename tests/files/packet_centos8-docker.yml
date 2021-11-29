@@ -4,9 +4,9 @@ cloud_image: centos-8
 mode: default
 vm_memory: 3072Mi
 
-# Kubespray settings
-enable_nodelocaldns_secondary: true
-loadbalancer_apiserver_type: haproxy
-
 # required
 calico_iptables_backend: "Auto"
+
+# Use docker
+container_manager: docker
+etcd_deployment_type: docker

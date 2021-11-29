@@ -118,7 +118,7 @@ vagrant up
 - **Debian** Bullseye, Buster, Jessie, Stretch
 - **Ubuntu** 16.04, 18.04, 20.04
 - **CentOS/RHEL** 7, [8](docs/centos8.md)
-- **Fedora** 33, 34
+- **Fedora** 33, 34, 35
 - **Fedora CoreOS** (see [fcos Note](docs/fcos.md))
 - **openSUSE** Leap 15.x/Tumbleweed
 - **Oracle Linux** 7, [8](docs/centos8.md)
@@ -138,7 +138,7 @@ Note: Upstart/SysV init based OS types are not supported.
   - [cri-o](http://cri-o.io/) v1.21 (experimental: see [CRI-O Note](docs/cri-o.md). Only on fedora, ubuntu and centos based OS)
 - Network Plugin
   - [cni-plugins](https://github.com/containernetworking/plugins) v0.9.1
-  - [calico](https://github.com/projectcalico/calico) v3.20.2
+  - [calico](https://github.com/projectcalico/calico) v3.20.3
   - [canal](https://github.com/projectcalico/canal) (given calico/flannel versions)
   - [cilium](https://github.com/cilium/cilium) v1.9.10
   - [flanneld](https://github.com/flannel-io/flannel) v0.14.0
