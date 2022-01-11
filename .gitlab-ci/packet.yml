@@ -2,6 +2,7 @@
 .packet:
   extends: .testcases
   variables:
+    ANSIBLE_TIMEOUT: "120"
     CI_PLATFORM: packet
     SSH_USER: kubespray
   tags:
@@ -48,6 +49,16 @@ packet_ubuntu20-calico-aio-ansible-2_11:
     RESET_CHECK: "true"
 
 # ### PR JOBS PART2
+
+packet_ubuntu18-aio-docker:
+  stage: deploy-part2
+  extends: .packet_pr
+  when: on_success
+
+packet_ubuntu20-aio-docker:
+  stage: deploy-part2
+  extends: .packet_pr
+  when: on_success
 
 packet_ubuntu18-calico-aio:
   stage: deploy-part2
@@ -104,7 +115,7 @@ packet_debian10-cilium-svc-proxy:
   extends: .packet_periodic
   when: on_success
 
-packet_debian10-aio:
+packet_debian10-calico:
   stage: deploy-part2
   extends: .packet_pr
   when: on_success
