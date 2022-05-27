@@ -131,11 +131,11 @@
 - block:
     - name: Calico | Check if extra directory is needed
       stat:
-        path: "{{ local_release_dir }}/calico-{{ calico_version }}-kdd-crds/kdd"
+        path: "{{ local_release_dir }}/calico-{{ calico_version }}-kdd-crds/crd"
       register: kdd_path
     - name: Calico | Set kdd path
       set_fact:
-        calico_kdd_path: "{{ local_release_dir }}/calico-{{ calico_version }}-kdd-crds{{ '/kdd' if kdd_path.stat.exists is defined and kdd_path.stat.exists }}"
+        calico_kdd_path: "{{ local_release_dir }}/calico-{{ calico_version }}-kdd-crds{{ '/crd' if kdd_path.stat.exists is defined and kdd_path.stat.exists }}"
     - name: Calico | Create calico manifests for kdd
       assemble:
         src: "{{ calico_kdd_path }}"

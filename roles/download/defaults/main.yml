@@ -1393,9 +1393,9 @@ downloads:
     url: "{{ calico_crds_download_url }}"
     unarchive: true
     unarchive_extra_opts:
-    - "--strip=6"
+    - "--strip=3"
     - "--wildcards"
-    - "*/_includes/charts/calico/crds/kdd/"
+    - "**/libcalico-go/config/crd/"
     owner: "root"
     mode: "0755"
     groups:
